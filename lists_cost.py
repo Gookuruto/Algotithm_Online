@@ -1,10 +1,6 @@
-import cython
-import cython
-import random
+
 import numpy as np
 import matplotlib.pyplot as plt
-import multiprocessing
-import timeit
 import val_cout_object
 class BreakIt(Exception): pass
 data_in = []
@@ -118,26 +114,182 @@ def count_list(p, data, n):
         yield cost
         cost = 0
 
-cost_list = 0
-cost_list_tf = 0
-cost_list_mf = 0
-cost_list_count = 0
-list_to_front = []
-list_mv_forward = []
-list_count = []
+cost_list = []
+cost_list_tf = []
+cost_list_mf = []
+cost_list_count = []
+cost_list_geo = []
+cost_list_tf_geo = []
+cost_list_mf_geo = []
+cost_list_count_geo = []
+cost_list_h = []
+cost_list_tf_h = []
+cost_list_mf_h = []
+cost_list_count_h = []
+
 n_list = [100, 500, 1000, 5000, 10000, 50000, 100000]
 mean_list = []
 list=[]
+
+    #Normal Normal list
+for i in n_list:
+    for value in normal_list(probability_normal,data_in,i):
+        list.append(value)
+    cost_list.append(np.mean(list))
+    list.clear()
+
+    #geo normal list
+for i in n_list:
+    for value in normal_list(probability_geo,data_in,i):
+        list.append(value)
+    cost_list_geo.append(np.mean(list))
+    list.clear()
+
+    #harmonic normal list
+for i in n_list:
+    for value in normal_list(probability_harmonic, data_in, i):
+        list.append(value)
+    cost_list_h.append(np.mean(list))
+    list.clear()
+
+
+for i in n_list:
+    for value in count_list(probability_normal,data_in,i):
+        list.append(value)
+    cost_list_count.append(np.mean(list))
+    list.clear()
+
+    #geo normal list
 for i in n_list:
     for value in count_list(probability_geo,data_in,i):
         list.append(value)
-    mean_list.append(np.mean(list))
+    cost_list_count_geo.append(np.mean(list))
     list.clear()
 
-print(mean_list)
-fig, ax = plt.subplots()
-ax.semilogx(n_list,mean_list)
-ax.grid()
+    #harmonic normal list
+for i in n_list:
+    for value in count_list(probability_harmonic, data_in, i):
+        list.append(value)
+    cost_list_count_h.append(np.mean(list))
+    list.clear()
+
+
+
+for i in n_list:
+    for value in move_to_front_list(probability_normal,data_in,i):
+        list.append(value)
+    cost_list_mf.append(np.mean(list))
+    list.clear()
+
+    #geo normal list
+for i in n_list:
+    for value in move_to_front_list(probability_geo,data_in,i):
+        list.append(value)
+    cost_list_mf_geo.append(np.mean(list))
+    list.clear()
+
+    #harmonic normal list
+for i in n_list:
+    for value in move_to_front_list(probability_harmonic, data_in, i):
+        list.append(value)
+    cost_list_mf_h.append(np.mean(list))
+    list.clear()
+
+
+for i in n_list:
+    for value in transpose_list(probability_normal,data_in,i):
+        list.append(value)
+    cost_list_tf.append(np.mean(list))
+    list.clear()
+
+    #geo normal list
+for i in n_list:
+    for value in transpose_list(probability_geo,data_in,i):
+        list.append(value)
+    cost_list_tf_geo.append(np.mean(list))
+    list.clear()
+
+    #harmonic normal list
+for i in n_list:
+    for value in transpose_list(probability_harmonic, data_in, i):
+        list.append(value)
+    cost_list_tf_h.append(np.mean(list))
+    list.clear()
+
+
+
+plt.figure(1)
+plt.plot(n_list, cost_list)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("Normal List Normal Probability")
+plt.grid()
+plt.figure(2)
+plt.plot(n_list, cost_list_geo)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("Normal List Geo Probability")
+plt.grid()
+plt.figure(3)
+plt.plot(n_list, cost_list_h)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("Normal List Harmonic Probability")
+plt.grid()
+plt.figure(4)
+plt.plot(n_list, cost_list_tf)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("TRANSPOSE List Normal Probability")
+plt.grid()
+plt.figure(5)
+plt.plot(n_list, cost_list_tf_geo)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("TRANSPOSE List Geo Probability")
+plt.grid()
+plt.figure(6)
+plt.plot(n_list, cost_list_tf_h)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("TRANSPOSE List Harmonic Probability")
+plt.grid()
+plt.figure(7)
+plt.plot(n_list, cost_list_mf)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("MTF List Normal Probability")
+plt.grid()
+plt.figure(8)
+plt.plot(n_list, cost_list_mf_geo)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("MTF List Geo Probability")
+plt.grid()
+plt.figure(9)
+plt.plot(n_list, cost_list_mf_h)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("MTF List Harmonic Probability")
+plt.grid()
+plt.figure(10)
+plt.plot(n_list, cost_list_count)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("COUNT List Normal Probability")
+plt.grid()
+plt.figure(11)
+plt.plot(n_list, cost_list_count_geo)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("COUNT List Geo Probability")
+plt.grid()
+plt.figure(12)
+plt.plot(n_list, cost_list_count_h)
+plt.semilogx()
+plt.xlabel('n')
+plt.title("COUNT List Harmonic Probability")
+plt.grid()
 plt.show()
 # list.sort()
 
